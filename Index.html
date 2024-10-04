@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .timer-btns {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #timerDisplay {
+            margin: 50px 0;
+            font-size: 36px;
+        }
+        #startButton {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: none;
+        }
+        .custom-input {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <div>Go Huskies!</div>
+        <div class="timer-btns">
+            <button style="background-color: blue; color: white;" onclick="setTimer(5)">5</button>
+            <button style="background-color: green; color: white;" onclick="setTimer(15)">15</button>
+            <button style="background-color: orange; color: white;" onclick="setTimer(20)">20</button>
+            <button style="background-color: red; color: white;" onclick="setTimer(30)">30</button>
+            <button style="background-color: purple; color: white;" onclick="showCustomInput()">Custom</button>
+        </div>
+    </div>
+
+    <div class="custom-input">
+        <input type="number" id="customMinutes" placeholder="Enter minutes" />
+        <button onclick="setCustomTimer()">Set Custom Timer</button>
+    </div>
+
+    <div id="timerDisplay"></div>
+
+    <button id="startButton" onclick="startTimer()">Start Timer</button>
+
+    <script>
+        let timerMinutes = 0;
+        let timerInterval;
+
+        function setTimer(minutes) {
+            timerMinutes = minutes;
+            document.getElementById('timerDisplay').textContent = `Timer set for ${minutes} minutes`;
+            document.getElementById('startButton').style.display = 'inline-block';
+        }
+
+        function showCustomInput() {
+            document.querySelector('.custom-input').style.display = 'block';
+        }
+
+        function setCustomTimer() {
+            const customMinutes = parseInt(document.getElementById('customMinutes').value);
+            if (isNaN(customMinutes) || customMinutes <= 0) {
+                alert('Please enter a valid number of minutes.');
+            } else {
+                setTimer(customMinutes);
+                document.querySelector('.custom-input').style.display = 'none';
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);  // Clear any existing timer
+
+            let timeRemaining = timerMinutes * 60;  // Convert minutes to seconds
+            updateTimerDisplay(timeRemaining);
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay(timeRemaining);
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up!');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            document.getElementById('timerDisplay').textContent = `Time left: ${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+    </script>
+
+</body>
+</html>
