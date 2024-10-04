@@ -6,12 +6,20 @@
     <title>Bubble Timer</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
         #header {
             display: flex;
             justify-content: space-between;
+            width: 80%;
             padding: 20px;
             font-size: 24px;
             font-weight: bold;
@@ -21,26 +29,52 @@
             gap: 10px;
         }
         button {
-            padding: 10px 20px;
+            padding: 10px 15px;
             font-size: 18px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        #timerContainer {
+            margin-top: 50px;
+            display: flex; /* Use flexbox to arrange bubbles horizontally */
+            flex-wrap: wrap; /* Allow bubbles to wrap onto the next line if needed */
+            justify-content: center; /* Center the bubbles */
+            gap: 20px; /* Space between bubbles */
         }
         .bubble {
-            margin: 20px auto;
             padding: 20px;
             border-radius: 15px;
             color: white;
             font-size: 24px;
             width: 200px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            transition: transform 0.2s;
         }
-        #timerContainer {
-            margin-top: 50px;
+        .bubble:hover {
+            transform: scale(1.05);
         }
         .custom-input {
             display: none;
             margin-top: 10px;
+            text-align: center;
+        }
+        .custom-input input {
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .custom-input button {
+            margin-left: 10px;
+            background-color: purple;
         }
     </style>
 </head>
@@ -49,11 +83,11 @@
     <div id="header">
         <div>Go Huskies!</div>
         <div class="timer-btns">
-            <button style="background-color: blue; color: white;" onclick="createBubble(5, 'blue')">5</button>
-            <button style="background-color: green; color: white;" onclick="createBubble(15, 'green')">15</button>
-            <button style="background-color: orange; color: white;" onclick="createBubble(20, 'orange')">20</button>
-            <button style="background-color: red; color: white;" onclick="createBubble(30, 'red')">30</button>
-            <button style="background-color: purple; color: white;" onclick="showCustomInput()">Custom</button>
+            <button style="background-color: blue;" onclick="createBubble(5, 'blue')">5</button>
+            <button style="background-color: green;" onclick="createBubble(15, 'green')">15</button>
+            <button style="background-color: orange;" onclick="createBubble(20, 'orange')">20</button>
+            <button style="background-color: red;" onclick="createBubble(30, 'red')">30</button>
+            <button style="background-color: purple;" onclick="showCustomInput()">Custom</button>
         </div>
     </div>
 
@@ -82,9 +116,35 @@
                 if (timeRemaining <= 0) {
                     clearInterval(interval);
                     bubble.textContent = 'Time\'s up!';
+                    bubble.style.backgroundColor = '#333';  // Change color when time is up
                 }
             }, 1000);
         }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        function showCustomInput() {
+            document.querySelector('.custom-input').style.display = 'block';
+        }
+
+        function setCustomTimer() {
+            const customMinutes = parseInt(document.getElementById('customMinutes').value);
+            if (isNaN(customMinutes) || customMinutes <= 0) {
+                alert('Please enter a valid number of minutes.');
+            } else {
+                createBubble(customMinutes, 'purple');
+                document.querySelector('.custom-input').style.display = 'none';
+                document.getElementById('customMinutes').value = '';  // Clear the input
+            }
+        }
+    </script>
+
+</body>
+</html>
 
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
