@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer</title>
+    <title>Bubble Timer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,18 +27,16 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        #timerDisplay {
-            margin: 50px 0;
-            font-size: 36px;
-        }
-        #startButton {
-            background-color: #333;
-            color: white;
+        .bubble {
+            margin: 20px auto;
             padding: 20px;
+            border-radius: 15px;
+            color: white;
             font-size: 24px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: none;
+            width: 200px;
+        }
+        #timerContainer {
+            margin-top: 50px;
         }
         .custom-input {
             display: none;
@@ -51,10 +49,10 @@
     <div id="header">
         <div>Go Huskies!</div>
         <div class="timer-btns">
-            <button style="background-color: blue; color: white;" onclick="setTimer(5)">5</button>
-            <button style="background-color: green; color: white;" onclick="setTimer(15)">15</button>
-            <button style="background-color: orange; color: white;" onclick="setTimer(20)">20</button>
-            <button style="background-color: red; color: white;" onclick="setTimer(30)">30</button>
+            <button style="background-color: blue; color: white;" onclick="createBubble(5, 'blue')">5</button>
+            <button style="background-color: green; color: white;" onclick="createBubble(15, 'green')">15</button>
+            <button style="background-color: orange; color: white;" onclick="createBubble(20, 'orange')">20</button>
+            <button style="background-color: red; color: white;" onclick="createBubble(30, 'red')">30</button>
             <button style="background-color: purple; color: white;" onclick="showCustomInput()">Custom</button>
         </div>
     </div>
@@ -64,18 +62,34 @@
         <button onclick="setCustomTimer()">Set Custom Timer</button>
     </div>
 
-    <div id="timerDisplay"></div>
-
-    <button id="startButton" onclick="startTimer()">Start Timer</button>
+    <div id="timerContainer"></div>
 
     <script>
-        let timerMinutes = 0;
-        let timerInterval;
+        function createBubble(minutes, color) {
+            const timerContainer = document.getElementById('timerContainer');
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.style.backgroundColor = color;
+            timerContainer.appendChild(bubble);
 
-        function setTimer(minutes) {
-            timerMinutes = minutes;
-            document.getElementById('timerDisplay').textContent = `Timer set for ${minutes} minutes`;
-            document.getElementById('startButton').style.display = 'inline-block';
+            let timeRemaining = minutes * 60;
+            bubble.textContent = formatTime(timeRemaining);
+
+            const interval = setInterval(() => {
+                timeRemaining--;
+                bubble.textContent = formatTime(timeRemaining);
+
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    bubble.textContent = 'Time\'s up!';
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
         }
 
         function showCustomInput() {
@@ -87,32 +101,9 @@
             if (isNaN(customMinutes) || customMinutes <= 0) {
                 alert('Please enter a valid number of minutes.');
             } else {
-                setTimer(customMinutes);
+                createBubble(customMinutes, 'purple');
                 document.querySelector('.custom-input').style.display = 'none';
             }
-        }
-
-        function startTimer() {
-            clearInterval(timerInterval);  // Clear any existing timer
-
-            let timeRemaining = timerMinutes * 60;  // Convert minutes to seconds
-            updateTimerDisplay(timeRemaining);
-
-            timerInterval = setInterval(() => {
-                timeRemaining--;
-                updateTimerDisplay(timeRemaining);
-
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    alert('Time is up!');
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            document.getElementById('timerDisplay').textContent = `Time left: ${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
         }
     </script>
 
